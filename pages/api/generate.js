@@ -49,14 +49,13 @@ export default async function (req, res) {
 }
 
 function generatePrompt(story) {
-  const story =
-  story[0].toUpperCase() + story.slice(1).toLowerCase();
+  const formattedStory = story[0].toUpperCase() + story.slice(1).toLowerCase();
   return `Suggest three names for an animal that is a superhero.
 
 Animal: Cat
 Names: Captain Sharpclaw, Agent Fluffball, The Incredible Feline
 Animal: Dog
 Names: Ruff the Protector, Wonder Canine, Sir Barks-a-Lot
-Animal: ${story}
+Animal: ${formattedStory}
 Names:`;
 }
