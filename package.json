@@ -5,9 +5,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test": "mocha --timeout 10000 --recursive --exit"
   },
+  "type": "module",
   "dependencies": {
+    "dotenv": "^16.3.1",
     "next": "^13.4.6",
     "openai": "^3.1.0",
     "react": "^18.2.0",

@@ -1,4 +1,5 @@
 import { Configuration, OpenAIApi } from "openai";
+import 'dotenv/config'
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -46,6 +47,17 @@ export default async function (req, res) {
       });
     }
   }
+}
+
+export async function generateCompletion(story) {
+  const prompt = generatePrompt(story);
+  const completion = await openai.createCompletion({
+    model: "text-davinci-003",
+    prompt: prompt,
+    temperature: 0.6,
+  });
+  const result = completion.data.choices[0].text;
+  return result;
 }
 
 function generatePrompt(story) {
