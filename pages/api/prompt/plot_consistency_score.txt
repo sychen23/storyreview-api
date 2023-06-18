@@ -1,0 +1,10 @@
+Define the plot consistency of a story as follows:
+- there are no contradictions, e.g. if a fact is stated as true, it is not also stated as false
+- the point of view in which the story is written stays the same throughout
+
+Here is a story:
+
+%s1
+
+
+What is the plot consistency score, 0 (not consistent at all) to 100 (extremely consistent)? Output just one number.
