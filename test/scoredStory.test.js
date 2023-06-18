@@ -9,6 +9,10 @@ describe('ScoredStoryTests', () => {
     story = new ScoredStory(storyText);
   });
 
+  afterEach(() => {
+    console.log(story);
+  })
+
   it('should calculate general consistency score', async () => {
     const score = await story.calculate_general_consistency_score();
     assert.ok(score >= 0 && score <= 1); // Check if the score is within the range [0, 1]

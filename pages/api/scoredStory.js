@@ -59,6 +59,10 @@ class ScoredStory {
     this.story_text = story_text;
     this.score = new Score(null, null, null);
   }
+  
+  toString() {
+    return JSON.stringify(this);
+  }
 
   async calculate_score(score_args) {
     if (score_args.includes('general_consistency_score')) {
@@ -78,9 +82,7 @@ class ScoredStory {
     const promptTemplate = await content('pages/api/prompt/general_consistency_score.txt');
     const prompt = parameterizedString(promptTemplate, this.story_text);
     const completion = await generateCompletion(prompt);
-    console.log(completion);
     const score = divideBy100IfNeeded(completion);    
-    console.log(score);
     return score;
   }
 
@@ -88,9 +90,7 @@ class ScoredStory {
     const promptTemplate = await content('pages/api/prompt/character_consistency_score.txt');
     const prompt = parameterizedString(promptTemplate, this.story_text);
     const completion = await generateCompletion(prompt);
-    console.log(completion);
     const score = divideBy100IfNeeded(completion);    
-    console.log(score);
     return score;
   }
 
@@ -98,9 +98,7 @@ class ScoredStory {
     const promptTemplate = await content('pages/api/prompt/plot_consistency_score.txt');
     const prompt = parameterizedString(promptTemplate, this.story_text);
     const completion = await generateCompletion(prompt);
-    console.log(completion);
     const score = divideBy100IfNeeded(completion);    
-    console.log(score);
     return score;
   }
 }

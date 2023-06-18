@@ -1,5 +1,6 @@
 import { Configuration, OpenAIApi } from "openai";
-import 'dotenv/config'
+import 'dotenv/config';
+import ScoredStory from './scoredStory.js';
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -25,14 +26,20 @@ export default async function (req, res) {
     });
     return;
   }
-
   try {
-    const completion = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: generatePrompt(story),
-      temperature: 0.6,
+    const scoredStory = new ScoredStory(story);
+    console.log(scoredStory);
+    const scoreTypes = ['general_consistency_score', 'character_consistency_score', 'plot_consistency_score'];
+    scoredStory.calculate_score(scoreTypes)
+    .then(() => {
+      console.log(scoredStory);
+      res.status(200).json({ result: JSON.stringify(scoredStory) });
+    })
+    .catch(error => {
+      // Handle any errors that occurred during score calculation
+      console.error('Error calculating scores:', error);
     });
-    res.status(200).json({ result: completion.data.choices[0].text });
+    
   } catch(error) {
     // Consider adjusting the error handling logic for your use case
     if (error.response) {
@@ -49,25 +56,27 @@ export default async function (req, res) {
   }
 }
 
-export async function generateCompletion(story) {
-  const prompt = generatePrompt(story);
-  const completion = await openai.createCompletion({
-    model: "text-davinci-003",
-    prompt: prompt,
-    temperature: 0.6,
-  });
-  const result = completion.data.choices[0].text;
-  return result;
+export async function generateCompletion(prompt) {
+  try {
+    const completion = await openai.createCompletion({
+      model: "text-davinci-003",
+      prompt: prompt,
+      temperature: 0.6,
+    });
+    const result = completion.data.choices[0].text;
+    return result;
+} catch(error) {
+  // Consider adjusting the error handling logic for your use case
+  if (error.response) {
+    console.error(error.response.status, error.response.data);
+    res.status(error.response.status).json(error.response.data);
+  } else {
+    console.error(`Error with OpenAI API request: ${error.message}`);
+    res.status(500).json({
+      error: {
+        message: 'An error occurred during your request.',
+      }
+    });
+  }
 }
-
-function generatePrompt(story) {
-  const formattedStory = story[0].toUpperCase() + story.slice(1).toLowerCase();
-  return `Suggest three names for an animal that is a superhero.
-
-Animal: Cat
-Names: Captain Sharpclaw, Agent Fluffball, The Incredible Feline
-Animal: Dog
-Names: Ruff the Protector, Wonder Canine, Sir Barks-a-Lot
-Animal: ${formattedStory}
-Names:`;
 }
